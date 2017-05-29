@@ -10,6 +10,7 @@ provider "aws" {
   region = "${var.region}"
 }
 
+# Network
 
 module "network" {
   source = "../../../modules/aws/network"
@@ -20,4 +21,17 @@ module "network" {
   region          = "${var.region}"
   private_subnets = "${var.private_subnets}"
   public_subnets  = "${var.public_subnets}"
+}
+
+# Compute
+
+module "compute" {
+  source = "../../../modules/aws/compute"
+
+  name               = "${var.name}"
+  region             = "${var.region}"
+  vpc_cidr           = "${var.vpc_cidr}"
+  azs                = "${var.azs}"
+  private_subnets	 = "${var.private_subnets}"
+  public_subnets  	 = "${var.public_subnets}"
 }
