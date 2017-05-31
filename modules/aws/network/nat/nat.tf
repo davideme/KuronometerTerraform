@@ -24,3 +24,4 @@ resource "aws_nat_gateway" "nat" {
 }
 
 output "nat_gateway_ids" { value = "${join(",", aws_nat_gateway.nat.*.id)}" }
+output "nat_gateway_public_ips" { value = ["${aws_nat_gateway.nat.*.public_ip}"] }

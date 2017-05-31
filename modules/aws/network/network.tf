@@ -79,3 +79,4 @@ output "private_subnet_ids" { value = "${module.private_subnet.subnet_ids}" }
 
 # NAT
 output "nat_gateway_ids" { value = "${module.nat.nat_gateway_ids}" }
+output "nat_gateway_public_ips" { value = "${module.nat.nat_gateway_public_ips}" }

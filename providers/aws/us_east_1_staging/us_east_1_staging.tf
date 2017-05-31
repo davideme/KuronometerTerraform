@@ -38,3 +38,12 @@ module "compute" {
   private_subnet_ids = "${module.network.private_subnet_ids}"
   public_subnet_ids  = "${module.network.public_subnet_ids}"
 }
+
+# Analytics
+
+module "analytics" {
+    source = "../../../modules/aws/analytics"
+
+    name            = "${var.name}"
+    nat_gateway_public_ips  = "${module.network.nat_gateway_public_ips}"
+}
