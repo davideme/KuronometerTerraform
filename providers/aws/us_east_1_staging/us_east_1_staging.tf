@@ -31,7 +31,10 @@ module "compute" {
   name               = "${var.name}"
   region             = "${var.region}"
   vpc_cidr           = "${var.vpc_cidr}"
+  vpc_id             = "${module.network.vpc_id}"
   azs                = "${var.azs}"
-  private_subnets	 = "${var.private_subnets}"
+  private_subnets 	 = "${var.private_subnets}"
   public_subnets  	 = "${var.public_subnets}"
+  private_subnet_ids = "${module.network.private_subnet_ids}"
+  public_subnet_ids  = "${module.network.public_subnet_ids}"
 }

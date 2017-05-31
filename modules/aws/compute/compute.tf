@@ -1,9 +1,13 @@
 variable "name"            { }
+variable "vpc_id"        { }
 variable "vpc_cidr"        { }
 variable "azs"             { }
 variable "region"          { }
 variable "private_subnets" { }
 variable "public_subnets"  { }
+variable "private_subnet_ids" { }
+variable "public_subnet_ids" { }
+
 
 resource "aws_elastic_beanstalk_application" "web" {
   name        = "${var.name}-kuronometer-eb-app"
@@ -23,9 +27,29 @@ resource "aws_elastic_beanstalk_environment" "env" {
   setting {
     namespace = "aws:autoscaling:launchconfiguration"
     name      = "IamInstanceProfile"
-	value     = "aws-elasticbeanstalk-ec2-role"
+    value     = "aws-elasticbeanstalk-ec2-role"
   }
   
+  setting {
+    namespace = "aws:ec2:vpc"
+    name      = "VPCId"
+    value     = "${var.vpc_id}"
+  }
+
+  # Instances 
+  setting {
+    namespace = "aws:ec2:vpc"
+    name      = "Subnets"
+    value     = "${var.private_subnet_ids}"
+  }
+
+  # ELB 
+  setting {
+    namespace = "aws:ec2:vpc"
+    name      = "ELBSubnets"
+    value     = "${var.public_subnet_ids}"
+  }
+
   setting {
     namespace = "aws:elasticbeanstalk:healthreporting:system"
     name      = "SystemType"
