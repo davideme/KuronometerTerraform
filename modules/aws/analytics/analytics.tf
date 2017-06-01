@@ -3,7 +3,7 @@ variable "nat_gateway_public_ips" { type = "list" }
 
 resource "aws_elasticsearch_domain" "kuronometer" {
   domain_name           = "${var.name}-kuronometer"
-  elasticsearch_version = "5.1"
+  elasticsearch_version = "5.3"
   cluster_config {
     instance_type = "t2.small.elasticsearch"
     instance_count = 1
@@ -13,20 +13,25 @@ resource "aws_elasticsearch_domain" "kuronometer" {
 	ebs_enabled = true
 	volume_size = 35  	
   }
+}
 
-  access_policies = <<CONFIG
+resource "aws_elasticsearch_domain_policy" "main" {
+  domain_name = "${aws_elasticsearch_domain.kuronometer.domain_name}"
+
+  access_policies = <<POLICIES
 {
-    "Version": "2012-10-17",
     "Statement": [
         {
             "Action": "es:*",
-            "Principal": "*",
-            "Effect": "Allow",
             "Condition": {
                 "IpAddress": {"aws:SourceIp": ${jsonencode(var.nat_gateway_public_ips)}}
-            }
+            },
+            "Effect": "Allow",
+            "Principal": "*",
+            "Resource": "${aws_elasticsearch_domain.kuronometer.arn}"
         }
-    ]
+    ],
+    "Version": "2012-10-17"
 }
-CONFIG
+POLICIES
 }
