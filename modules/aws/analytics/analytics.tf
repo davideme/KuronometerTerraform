@@ -20,18 +20,27 @@ resource "aws_elasticsearch_domain_policy" "main" {
 
   access_policies = <<POLICIES
 {
-    "Statement": [
-        {
-            "Action": "es:*",
-            "Condition": {
-                "IpAddress": {"aws:SourceIp": ${jsonencode(var.nat_gateway_public_ips)}}
-            },
-            "Effect": "Allow",
-            "Principal": "*",
-            "Resource": "${aws_elasticsearch_domain.kuronometer.arn}"
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "*"
+      },
+      "Action": "es:*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": ${jsonencode(var.nat_gateway_public_ips)}
         }
-    ],
-    "Version": "2012-10-17"
+      },
+      "Resource": "${aws_elasticsearch_domain.kuronometer.arn}/*"
+    }
+  ]
 }
 POLICIES
+}
+
+output "elasticsearch_endpoint" {
+  value = "${aws_elasticsearch_domain.kuronometer.endpoint}"
 }

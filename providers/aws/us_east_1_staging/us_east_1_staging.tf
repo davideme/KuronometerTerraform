@@ -37,6 +37,7 @@ module "compute" {
   public_subnets  	 = "${var.public_subnets}"
   private_subnet_ids = "${module.network.private_subnet_ids}"
   public_subnet_ids  = "${module.network.public_subnet_ids}"
+  elasticsearch_endpoint  = "${module.analytics.elasticsearch_endpoint}"
 }
 
 # Analytics

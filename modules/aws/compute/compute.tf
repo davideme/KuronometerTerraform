@@ -7,7 +7,7 @@ variable "private_subnets" { }
 variable "public_subnets"  { }
 variable "private_subnet_ids" { }
 variable "public_subnet_ids" { }
-
+variable "elasticsearch_endpoint" {}
 
 resource "aws_elastic_beanstalk_application" "web" {
   name        = "${var.name}-kuronometer-eb-app"
@@ -72,5 +72,11 @@ resource "aws_elastic_beanstalk_environment" "env" {
     namespace = "aws:elasticbeanstalk:managedactions:platformupdate"
     name      = "UpdateLevel"
     value     = "minor"
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "ELASTIC_URL"
+    value     = "https://${var.elasticsearch_endpoint}/"
   }
 }
