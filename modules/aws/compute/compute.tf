@@ -1,16 +1,32 @@
-variable "name"            { }
-variable "vpc_id"        { }
-variable "vpc_cidr"        { }
-variable "azs"             { }
-variable "region"          { }
-variable "private_subnets" { }
-variable "public_subnets"  { }
-variable "private_subnet_ids" { }
-variable "public_subnet_ids" { }
+variable "name" {}
+variable "vpc_id" {}
+variable "vpc_cidr" {}
+variable "azs" {}
+variable "region" {}
+variable "private_subnets" {}
+variable "public_subnets" {}
+variable "private_subnet_ids" {}
+variable "public_subnet_ids" {}
 variable "elasticsearch_endpoint" {}
 
+variable "bastion_instance_type" {}
+variable "key_name" {}
+
+module "bastion" {
+  source = "./bastion"
+
+  name              = "${var.name}-bastion"
+  vpc_id            = "${var.vpc_id}"
+  vpc_cidr          = "${var.vpc_cidr}"
+  region            = "${var.region}"
+  public_subnet_ids = "${var.public_subnet_ids}"
+  key_name          = "${var.key_name}"
+  instance_type     = "${var.bastion_instance_type}"
+  key_name          = "${var.key_name}"
+}
+
 resource "aws_elastic_beanstalk_application" "web" {
-  name        = "${var.name}-kuronometer-eb-app"
+  name = "${var.name}-kuronometer-eb-app"
 }
 
 resource "aws_elastic_beanstalk_environment" "env" {
@@ -29,7 +45,7 @@ resource "aws_elastic_beanstalk_environment" "env" {
     name      = "IamInstanceProfile"
     value     = "aws-elasticbeanstalk-ec2-role"
   }
-  
+
   setting {
     namespace = "aws:ec2:vpc"
     name      = "VPCId"
